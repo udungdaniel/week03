@@ -6,6 +6,12 @@ import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data';
+import { Metadata } from 'next';
+
+// FIXED: Merged the duplicate metadata declarations into one
+export const metadata: Metadata = {
+  title: 'Invoices | Acme Dashboard',
+};
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -15,9 +21,10 @@ export default async function Page(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
+  
+  // Ensure we parse the page number correctly from the searchParams promise
   const currentPage = Number(searchParams?.page) || 1;
 
-  // Fetch total pages to enable the pagination component
   const totalPages = await fetchInvoicesPages(query);
 
   return (
@@ -30,7 +37,7 @@ export default async function Page(props: {
         <CreateInvoice />
       </div>
       
-      {/* The key ensures the skeleton shows up every time the query changes */}
+      {/* The key ensures the skeleton shows up when searching or paginating */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
