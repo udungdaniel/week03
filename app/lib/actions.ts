@@ -35,7 +35,6 @@ export type State = {
   message?: string | null;
 };
 
-// Fixed: Only one createInvoice function that supports useActionState (prevState)
 export async function createInvoice(prevState: State, formData: FormData) {
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -51,7 +50,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   }
 
   const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
+  const amountInCents = Math.round(amount * 100); // Added Math.round to avoid floating point issues
   const date = new Date().toISOString().split('T')[0];
 
   try {
@@ -67,7 +66,6 @@ export async function createInvoice(prevState: State, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
-// Fixed: Updated to match the same pattern as Create (supporting validation errors)
 export async function updateInvoice(id: string, prevState: State, formData: FormData) {
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -83,7 +81,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
   }
 
   const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
+  const amountInCents = Math.round(amount * 100);
 
   try {
     await sql`
