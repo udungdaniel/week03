@@ -1,4 +1,4 @@
-// ...
+import { fetchFilteredInvoices } from '../../lib/data';
 export default async function InvoicesTable({
   query,
   currentPage,

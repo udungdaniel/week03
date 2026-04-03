@@ -26,7 +26,10 @@ export function UpdateInvoice({ id }: { id: string }) {
 }
 
 export function DeleteInvoice({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  // FIXED: Wrap the action to return Promise<void> instead of Promise<{message}>
+  const deleteInvoiceWithId = async () => {
+    await deleteInvoice(id);
+  };
 
   return (
     <form action={deleteInvoiceWithId}>
