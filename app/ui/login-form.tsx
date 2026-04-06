@@ -26,12 +26,13 @@ export default function LoginForm() {
 
     const formData = new FormData(e.currentTarget);
 
-    const res = await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
+    // Explicitly type the response to satisfy TS
+    const res = (await signIn('credentials', {
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
       redirect: false,
       callbackUrl,
-    });
+    })) as { error?: string } | null;
 
     setIsPending(false);
 
@@ -52,11 +53,15 @@ export default function LoginForm() {
         <div className="w-full">
           {/* Email */}
           <div>
-            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900">
+            <label
+              htmlFor="email"
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+            >
               Email
             </label>
             <div className="relative">
               <input
+                id="email"
                 name="email"
                 type="email"
                 required
@@ -69,11 +74,15 @@ export default function LoginForm() {
 
           {/* Password */}
           <div className="mt-4">
-            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900">
+            <label
+              htmlFor="password"
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+            >
               Password
             </label>
             <div className="relative">
               <input
+                id="password"
                 name="password"
                 type="password"
                 required
@@ -86,10 +95,12 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
+        {/* Submit Button */}
+        <Button type="submit" className="mt-4 w-full" aria-disabled={isPending}>
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
 
+        {/* Error Message */}
         {errorMessage && (
           <div className="flex items-center space-x-2 text-red-500 mt-2">
             <ExclamationCircleIcon className="h-5 w-5" />
