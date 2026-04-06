@@ -26,20 +26,20 @@ export default function LoginForm() {
 
     const formData = new FormData(e.currentTarget);
 
-    // Explicitly type the response to satisfy TS
     const res = (await signIn('credentials', {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
-      redirect: false,
+      redirect: false, // handle redirect manually
       callbackUrl,
-    })) as { error?: string } | null;
+    })) as { error?: string; url?: string } | null;
 
     setIsPending(false);
 
     if (res?.error) {
       setErrorMessage('Invalid credentials');
-    } else {
-      window.location.href = callbackUrl;
+    } else if (res?.url) {
+      // Redirect to the URL returned by NextAuth (clean)
+      window.location.href = res.url;
     }
   }
 
