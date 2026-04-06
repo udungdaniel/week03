@@ -26,10 +26,9 @@ export function UpdateInvoice({ id }: { id: string }) {
 }
 
 export function DeleteInvoice({ id }: { id: string }) {
-  // FIXED: Wrap the action to return Promise<void> instead of Promise<{message}>
-  const deleteInvoiceWithId = async () => {
-    await deleteInvoice(id);
-  };
+  // Use bind to pre-fill the 'id' argument. 
+  // This is the standard way to pass arguments to Server Actions.
+  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
 
   return (
     <form action={deleteInvoiceWithId}>
@@ -40,3 +39,4 @@ export function DeleteInvoice({ id }: { id: string }) {
     </form>
   );
 }
+
